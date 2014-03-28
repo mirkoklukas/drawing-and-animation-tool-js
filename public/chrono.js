@@ -29,8 +29,6 @@ var Stage = function (width, height) {
     canvas.height = height;
 	var ctx = canvas.getContext('2d');
 
-	// put functions in prototype! 
-
     this.pixel = function(position) {
 	    ctx.fillStyle = '#ffffff';
 	    ctx.fillRect(position[0], position[1], 1, 1);
@@ -40,7 +38,6 @@ var Stage = function (width, height) {
 	    ctx.fillStyle = '#ffffff';
 	    ctx.fillRect(position[0], position[1], size[0], size[1]);
 	};
-
 
 	this.path = function(vertices, w, color) {
 		if(vertices.length > 0) {
@@ -52,12 +49,11 @@ var Stage = function (width, height) {
 			ctx.lineWidth = w;
 			ctx.strokeStyle= color;
 			ctx.moveTo(vertices[0][0],vertices[0][1]);
-			// ctx.fillStyle = color;
-			// ctx.fillRect(vertices[0][0],vertices[0][1], w, w);
+
 			for(var i=1; i< vertices.length; i++) {
 				ctx.lineTo(vertices[i][0],vertices[i][1]);
-				// ctx.fillRect(vertices[i][0],vertices[i][1], w, w);
 			}
+
 			ctx.stroke(); 
 		}
 	};
@@ -81,6 +77,7 @@ function makeObservable(obj) {
 		(callbacks[type] || []).map(function (f) {
 			f.apply(obj, args || null);
 		});
+		
 		(callbacks["any"] || []).map(function (f) {
 			f.apply(obj, [type].concat(args) );
 		});

@@ -1,14 +1,14 @@
-var express = require('express')
-  , http = require('http')
-  , app = express()
-  , server = app.listen(3000)
-  , io = require('socket.io').listen(server)
-  , MongoClient = require('mongodb').MongoClient
-  , GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
+var express = require('express'), 
+	app = express(), 
+	port = process.env.PORT || 3000,
+	io = require('socket.io').listen(server), 
+	MongoClient = require('mongodb').MongoClient;
 
 app.use(express.static(__dirname + '/public'));
 
-var clients = {};
+app.get('/', function(req, res){
+	res.sendfile("./public/chrono.html");
+});
 
 io.sockets.on('connection', function (socket) {
 	
@@ -46,8 +46,6 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-app.get('/', function(req, res){
-	res.sendfile("./public/chrono.html");
-});
-
+server = app.listen(port);
+console.log('The magic happens on port ' + port);
 
