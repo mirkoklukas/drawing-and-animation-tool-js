@@ -1,6 +1,7 @@
 var express = require('express'), 
 	app = express(), 
 	port = process.env.PORT || 3000,
+	server = app.listen(port),
 	io = require('socket.io').listen(server), 
 	MongoClient = require('mongodb').MongoClient;
 
@@ -46,6 +47,5 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-server = app.listen(port);
-console.log('The magic happens on port ' + port);
+
 
