@@ -1,0 +1,4 @@
+
+
+https://github.com/LearnBoost/socket.io/wiki/Rooms#rooms-a-client-has-joined
+io.sockets.manager.roomClients[socket.id]
