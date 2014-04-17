@@ -1,13 +1,14 @@
 
 
-function mod(a, b) {
+var mod = function (a, b) {
     return ((a % b) + b) % b;
 };
 
-Number.prototype.mod = function (b) {
-    return ((this % b) + b) % b;
-};
-
+if(!Number.prototype.mod) { 
+    Number.prototype.mod = function (b) {
+        return ((this % b) + b) % b;
+	};
+}
 var bind = function(that, f) {
   return function() {
     return f.apply(that, arguments);

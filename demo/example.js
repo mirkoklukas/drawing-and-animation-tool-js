@@ -12,9 +12,7 @@ var stage = new Stage("canvas-container")
   , navbar = document.getElementById("navbar")
   , buttons = [].slice.apply(navbar.getElementsByClassName("btn"))
   , eventSource = new MouseEventSource("canvas-container")
-  , layer = new Layer(eventSource)
-  , remoteInputs = {}
-  ,	remoteLayers = [];
+  , layer = new Layer(eventSource); 
 
 colors.map(function (element) {
 	element.style.backgroundColor = element.getAttribute("color");
@@ -33,39 +31,8 @@ var infinity = new AnimationFrameLoop(function () {
 	eventSource.setTime(t);
 
 	layer.draw(t,stage);
-	remoteLayers.map( function (layer) { 
-		layer.draw(t, stage); 
-	});
 
 	t += 1;
-});
-
-var socket = io.connect('http://localhost:3000/');
-
-socket.on('welcome', function (data) {
-	eventSource.onAny(function (type, e) {
-		socket.emit('remote event', [].slice.call(arguments) );
-	})
-});
-
-socket.on('new player', function (data) {
-	remoteInputs[data.id] = makeObservable({});
-	remoteLayers.push(new Layer(remoteInputs[data.id]));
-
-	socket.emit('remote event history', {
-		id: data.id,
-		events: layer.eventHistory 
-	});	
-});
-
-socket.on('remote event history', function (data) {
-	remoteInputs[data.id] = makeObservable({});
-	remoteLayers.push(new Layer(remoteInputs[data.id]));
-	remoteInputs[data.id].fireMany( data.events );
-});
-
-socket.on('remote event', function (data) {
-	if(remoteInputs[data.id]!== undefined) remoteInputs[data.id].fire.apply(null, data.event) ;
 });
 
 
