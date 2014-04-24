@@ -1,4 +1,4 @@
-Time's a flat circle - drawing & animation tool
+A drawing & animation tool
 =============================
 
 A drawing and animation tool that let's you draw on a screen and play back your mouse tracks.
@@ -9,3 +9,4 @@ The non-static version (i.e. not the demo) allows multiple users to remotely dra
 - emitting mouse events over a socket connection,
 - feeding them into an eventsource, and 
 - have "drawing layers" listen and react to that source.
+
