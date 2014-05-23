@@ -1,26 +1,18 @@
-var toggleFullScreen = function () {
-  if (!document.fullscreenElement &&    // alternative standard method
-      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    } else if (document.documentElement.msRequestFullscreen) {
-      document.documentElement.msRequestFullscreen();
-    } else if (document.documentElement.mozRequestFullScreen) {
-      document.documentElement.mozRequestFullScreen();
-    } else if (document.documentElement.webkitRequestFullscreen) {
-      document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
-  }
+var extractMousePosition = function(e) {
+	var posx = 0;
+	var posy = 0;
+	if (!e) var e = window.event;
+	if (e.pageX || e.pageY) 	{
+		posx = e.pageX;
+		posy = e.pageY;
+	}
+	else if (e.clientX || e.clientY) 	{
+		posx = e.clientX + document.body.scrollLeft
+			+ document.documentElement.scrollLeft;
+		posy = e.clientY + document.body.scrollTop
+			+ document.documentElement.scrollTop;
+	}
+	return [posx, posy];
 }
 
 var Stage = function (containerId) {
@@ -113,6 +105,12 @@ var mutateObservable = function (obj, f) {
 };
 
 var AnimationFrameLoop = function (update) {
+	var requestAnimationFrame = window.requestAnimationFrame || 
+								window.mozRequestAnimationFrame ||
+                              	window.webkitRequestAnimationFrame || 
+                              	window.msRequestAnimationFrame;
+
+
 	requestAnimationFrame(function tick() {
 		update();
 		requestAnimationFrame(tick);
@@ -121,7 +119,8 @@ var AnimationFrameLoop = function (update) {
 
 var MouseEventSource = function (elementId) {
 	var time
-	  , element = window.document.getElementById(elementId) 
+	  , element = window.document.getElementById(elementId)
+	  , parentOffset = element.getBoundingClientRect()
 	  , that = this;
 
 	makeObservable(this);
@@ -134,10 +133,8 @@ var MouseEventSource = function (elementId) {
 		that.fire("mousedown", { 
 			time: time,
 			t: time,
-			x: e.clientX  - element.getBoundingClientRect().left,
-			y: e.clientY  - element.getBoundingClientRect().top,
-			clientX: e.clientX  - element.getBoundingClientRect().left,
-			clientY: e.clientY  - element.getBoundingClientRect().top
+			x: e.pageX - parentOffset.left,
+			y: e.pageY - parentOffset.top
 		});
     });
 
@@ -145,10 +142,8 @@ var MouseEventSource = function (elementId) {
     	that.fire("mouseup",  { 
 			time: time,
 			t: time,
-			x: e.clientX  - element.getBoundingClientRect().left,
-			y: e.clientY  - element.getBoundingClientRect().top,
-			clientX: e.clientX  - element.getBoundingClientRect().left,
-			clientY: e.clientY  - element.getBoundingClientRect().top
+			x: e.pageX - parentOffset.left,
+			y: e.pageY - parentOffset.top
 		});
     });
 
@@ -156,117 +151,11 @@ var MouseEventSource = function (elementId) {
     	that.fire("mousemove",  { 
 			time: time,
 			t: time,
-			x: e.clientX  - element.getBoundingClientRect().left,
-			y: e.clientY  - element.getBoundingClientRect().top,
-			clientX: e.clientX  - element.getBoundingClientRect().left,
-			clientY: e.clientY  - element.getBoundingClientRect().top
+			x: e.pageX - parentOffset.left,
+			y: e.pageY - parentOffset.top
 		});
     });
-
-  //   window.onkeydown = function(e) {
-  //   	that.fire("keydown",  { 
-		// 	time: time,
-		// 	t: time,
-		// 	keyCode: e.keyCode
-		// });
-  //   };
-
-  //   window.onkeyup = function(e) {
-  //   	that.fire("keyup",  { 
-		// 	time: time,
-		// 	t: time,
-		// 	keyCode: e.keyCode
-		// });
-  //   };
 }
-
-// var keyCode = { 
-// 	LEFT_MOUSE: "LEFT_MOUSE",
-// 	RIGHT_MOUSE: "RIGHT_MOUSE",
-
-// 	BACKSPACE: 8,
-// 	TAB: 9,
-// 	ENTER: 13,
-// 	SHIFT: 16,
-// 	CTRL: 17,
-// 	ALT: 18,
-// 	PAUSE: 19,
-// 	CAPS_LOCK: 20,
-// 	ESC: 27,
-// 	SPACE: 32,
-// 	PAGE_UP: 33,
-// 	PAGE_DOWN: 34,
-// 	END: 35,
-// 	HOME: 36,
-// 	LEFT_ARROW: 37,
-// 	UP_ARROW: 38,
-// 	RIGHT_ARROW: 39,
-// 	DOWN_ARROW: 40,
-// 	INSERT: 45,
-// 	DELETE: 46,
-// 	ZERO: 48,
-// 	ONE: 49,
-// 	TWO: 50,
-// 	THREE: 51,
-// 	FOUR: 52,
-// 	FIVE: 53,
-// 	SIX: 54,
-// 	SEVEN: 55,
-// 	EIGHT: 56,
-// 	NINE: 57,
-// 	A: 65,
-// 	B: 66,
-// 	C: 67,
-// 	D: 68,
-// 	E: 69,
-// 	F: 70,
-// 	G: 71,
-// 	H: 72,
-// 	I: 73,
-// 	J: 74,
-// 	K: 75,
-// 	L: 76,
-// 	M: 77,
-// 	N: 78,
-// 	O: 79,
-// 	P: 80,
-// 	Q: 81,
-// 	R: 82,
-// 	S: 83,
-// 	T: 84,
-// 	U: 85,
-// 	V: 86,
-// 	W: 87,
-// 	X: 88,
-// 	Y: 89,
-// 	Z: 90,
-// 	F1: 112,
-// 	F2: 113,
-// 	F3: 114,
-// 	F4: 115,
-// 	F5: 116,
-// 	F6: 117,
-// 	F7: 118,
-// 	F8: 119,
-// 	F9: 120,
-// 	F10: 121,
-// 	F11: 122,
-// 	F12: 123,
-// 	NUM_LOCK: 144,
-// 	SCROLL_LOCK: 145,
-// 	SEMI_COLON: 186,
-// 	EQUALS: 187,
-// 	COMMA: 188,
-// 	DASH: 189,
-// 	PERIOD: 190,
-// 	FORWARD_SLASH: 191,
-// 	GRAVE_ACCENT: 192,
-// 	OPEN_SQUARE_BRACKET: 219,
-// 	BACK_SLASH: 220,
-// 	CLOSE_SQUARE_BRACKET: 221,
-// 	SINGLE_QUOTE: 222
-// };
-
 
 
 var Layer = function (eventSource) {
@@ -353,7 +242,7 @@ Layer.prototype.createLineInSpacetime = function(a, b) {
 
 	for(i=a[0]; i<=b[0]; i++) {
 		s = (i - a[0])/l;
-		line.push([i, a[1] + s*(b[1] - a[1]), a[2] + s*(b[2] - a[2])]);
+		line.push([i, a[1] + s*(b[1] - a[1]), a[	2] + s*(b[2] - a[2])]);
 	}
 
 	return line;
@@ -365,18 +254,18 @@ Layer.prototype.createLineInSpacetime = function(a, b) {
 // 
 Layer.prototype.onMouseDown = function (e) {
 	this.newTrace(this.attr);
-	this.addVertex([e.time, e.clientX, e.clientY]);
+	this.addVertex([e.time, e.x, e.y]);
 	this.active = true;
 };
 
 Layer.prototype.onMouseUp = function (e) {
 	this.active = false;
-	this.addVertices(this.createLineInSpacetime(this.getLastVertex(), [e.time, e.clientX, e.clientY]).slice(1));
+	this.addVertices(this.createLineInSpacetime(this.getLastVertex(), [e.time, e.x, e.y]).slice(1));
 };
 
 Layer.prototype.onMouseMove = function (e) {
 	if(this.isActive()) {
-			this.addVertices(this.createLineInSpacetime(this.getLastVertex(), [e.time, e.clientX, e.clientY]).slice(1));
+			this.addVertices(this.createLineInSpacetime(this.getLastVertex(), [e.time, e.x, e.y]).slice(1));
 	}
 };
 

@@ -80,7 +80,9 @@
 	<body clas="unselectable">
 		<div style="padding: 0 50px 0 50px; width: 700px; margin: auto auto;"> 
 			
-			<div style="height: 3em; line-height: 3em; font-size: 1.5em;">A drawing and animation tool <span style="height: 1em; line-height: 1em; font-size: 0.6em;">Inspired by Andreas Gysin's Chronodraw: <a style="font-size: 1em;" href="http://www.ertdfgcvb.ch/p1/chronodraw">www.ertdfgcvb.ch</a></span></div>
+			<div style="height: 3em; line-height: 3em; font-size: 1.5em;">
+				A drawing and animation tool <span style="height: 1em; line-height: 1em; font-size: 0.6em;">Inspired by Andreas Gysin's Chronodraw: <a style="font-size: 1em;" href="http://www.ertdfgcvb.ch/p1/chronodraw">www.ertdfgcvb.ch</a></span>
+			</div>
 
 			<div id="color-palette">
 				<div class="color test" color="#336699"></div>
@@ -108,17 +110,16 @@
 				<div class="btn" event="changewidth" value="3">3</div>
 				<div class="btn" event="changewidth" value="5">5</div>
 				<div class="btn" event="changewidth" value="10">10</div>
-				<div class="label" >Stroke:</div>
+				<div class="label">Stroke:</div>
 				<div class="btn" event="changetail" value="10">10</div>
 				<div class="btn" event="changetail" value="20">20</div>
 				<div class="btn" event="changetail" value="30">30</div>
 				<div class="btn" event="changetail" value="50">50</div>
-				<div class="label" >Tail:</div>
+				<div class="label">Tail:</div>
 			</div>
 
 		</div>
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-		<script type="text/javascript" src='socket.io/socket.io.js'></script>
+		<script type="text/javascript" src="socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="helper.js"></script>
     	<script type="text/javascript" src="chronodraw.js"></script>
     	<script type="text/javascript" src="client.js"></script>
