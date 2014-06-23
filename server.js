@@ -1,9 +1,10 @@
 var express = require('express'), 
-	app = express(), 
-	port = process.env.PORT || 3000,
-	server = app.listen(port),
-	io = require('socket.io').listen(server), 
-	MongoClient = require('mongodb').MongoClient;
+	app = express(),
+	server = require('http').Server(app), 
+	io = require('socket.io')(server),
+	port = process.env.PORT || 3000;
+
+server.listen(port);
 
 app.use(express.static(__dirname + '/public'));
 
@@ -12,7 +13,7 @@ app.get('/', function(req, res){
 });
 
 io.sockets.on('connection', function (socket) {
-	
+
 	socket.emit("welcome", {
 		"msg": "You're connected..." + socket.id,
 		"id": socket.id
@@ -24,7 +25,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('remote event history', function (data) {
-		io.sockets.socket(data.id).emit('remote event history', { 
+		io.to(data.id).emit('remote event history', { 
 			msg: "Hey " + data.id + ", here is " + socket.id + "\'s history", 
 			id: socket.id, 
 			events: data.events
@@ -32,6 +33,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('remote event', function (data) {
+		
 		socket.broadcast.emit('remote event', { 
 			"msg": "Received remote event...", 
 			"id": socket.id, 

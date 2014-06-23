@@ -43,12 +43,14 @@ var infinity = new AnimationFrameLoop(function () {
 var socket = io.connect('http://localhost:3000/');
 
 socket.on('welcome', function (data) {
+	console.log(data.msg);
 	eventSource.onAny(function (type, e) {
 		socket.emit('remote event', [].slice.call(arguments) );
 	})
 });
 
 socket.on('new player', function (data) {
+	console.log(data.msg);
 	remoteInputs[data.id] = makeObservable({});
 	remoteLayers.push(new Layer(remoteInputs[data.id]));
 
@@ -59,12 +61,14 @@ socket.on('new player', function (data) {
 });
 
 socket.on('remote event history', function (data) {
+	console.log(data.msg);
 	remoteInputs[data.id] = makeObservable({});
 	remoteLayers.push(new Layer(remoteInputs[data.id]));
 	remoteInputs[data.id].fireMany( data.events );
 });
 
 socket.on('remote event', function (data) {
+	console.log(data.msg);
 	if(remoteInputs[data.id]!== undefined) remoteInputs[data.id].fire.apply(null, data.event) ;
 });
 
